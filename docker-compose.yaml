@@ -1,0 +1,77 @@
+#Kill all containers
+#docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
+version: '3.7'
+services:
+    #PHP Service
+    app:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+            args:
+                user: ${USER}
+                uid: ${UID}
+        image: php_service
+        container_name: app
+        restart: unless-stopped
+        tty: true
+        environment:
+            SERVICE_NAME: app
+            SERVICE_TAGS: dev
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        networks:
+            - app-network
+    #Nginx Service
+    webserver:
+        image: nginx:alpine
+        container_name: nginx
+        restart: unless-stopped
+        tty: true
+        ports:
+            - 8000:80
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+        networks:
+            - app-network
+    #MySQL Service
+    db:
+        image: mysql
+        container_name: ${DB_HOST}
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "33061:3306"
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        networks:
+            - app-network
+    #PHPMyAdmin Service
+    phpmyadmin:
+        container_name: phpmyadmin
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - "7000:80"
+        links:
+            - db:db
+        environment:
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            UPLOAD_LIMIT: 3000000000
+        networks:
+            - app-network
+#Docker Networks
+networks:
+    app-network:
+        driver: bridge
+#Volumes
+volumes:
+    lbdata:
+        driver: local
