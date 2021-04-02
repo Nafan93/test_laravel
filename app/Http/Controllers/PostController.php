@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
-
+use Auth;
+use Storage;
 class PostController extends Controller
 {
     /**
@@ -14,7 +15,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        return view('home')->with([
+            'posts' => Post::latest()->get()
+            ]);
     }
 
     /**
@@ -24,7 +27,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create')->with([
+            'post' => [],
+        ]);
     }
 
     /**
@@ -35,9 +40,33 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'title'=>'required',
+            'content'=>'required',
+        ]);
+        $post = new post;
+        $post->title = $request->title;
+        $post->content = $request->content;
+        $post->user_id = Auth::user()->id;
+        $post->save();
 
+        if ($request->has('image')) {
+            $imagePath = Storage::disk('public')->put( $post->id  , $request->image);
+            $post->image = '/storage/' . $imagePath;
+        }
+
+
+        /*if ($request->has('image')) {
+            Storage::makeDirectory('uploads/posts/' . $post->id);
+        
+            $request->file('image')
+                ->move(storage_path() . '/app/public/uploads/posts/' . $post->id, $post->id . '.jpg');
+ 
+            $post->image = '/storage/uploads/posts/' . $post->id . '/' . $post->id . '.jpg';
+        }*/
+        $post->save();
+        return redirect('/')->with('success', 'Post created');
+    }
     /**
      * Display the specified resource.
      *

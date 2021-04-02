@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\IndexController::class, 'index'])->name('index');
+Route::get('/', [App\Http\Controllers\PostController::class, 'index'])->name('index');
 
+Route::resource('/posts', App\Http\Controllers\PostController::class);
 Auth::routes();
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
