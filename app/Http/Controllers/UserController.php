@@ -46,7 +46,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        
+        //Validate input
         $request->validate([
             'name'=>'required',
             'email'=>'required | email | unique:users',
@@ -54,24 +54,25 @@ class UserController extends Controller
             'position_id' => 'required',
             'roles' => 'required'
         ]);
-       
-        
+
+        //Create new user
         $user = new User;
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = $request->password;
         $user->position_id = $request->position_id;
         $user->save();
-        
+
+        //Set relations
         if($request->has('departments')) {
             $user->departments()->attach($request->input('departments'));
         }
         if($request->has('roles')) {
             $user->roles()->attach($request->input('roles'));
         }
-
+        //Save image in storage/app/public/
         if ($request->has('image')) {
-            $imagePath = Storage::disk('public')->put( 'user id ' . $user->id  , $request->image);
+            $imagePath = Storage::disk('public')->put( 'user_id ' . $user->id  , $request->image);
             $user->image = '/storage/' . $imagePath;
         }
 
@@ -98,7 +99,12 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return view('users.edit',  [
+            'user' => $user,
+            'departments' => Department::get(),
+            'positions' => Position::get(),
+            'roles' => Role::get(), 
+            ]);    
     }
 
     /**
@@ -110,7 +116,36 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        //Validate unique email
+        $request->validate([
+            'email' => 'email | unique:users,email,'. $user->id,
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        //If New Password == Null
+        if ($request->password == '') {
+            $user->password = $user->password;
+        }
+        $user->position_id = $request->position_id;
+        $user->save();
+        //Update relations
+        $user->departments()->detach();
+            if($request->input('departments')):
+                $user->departments()->attach($request->input('departments'));
+            endif; 
+        $user->roles()->detach();
+            if($request->input('roles')):
+                $user->roles()->attach($request->input('roles'));
+            endif;
+        //Update image
+        if ($request->has('image')) {
+            $imagePath = Storage::disk('public')->put( 'user id ' . $user->id  , $request->image);
+            $user->image = '/storage/' . $imagePath;
+        }
+        $user->save();   
+            
+        return redirect('/')->with('success', 'User updated');
     }
 
     /**
@@ -121,6 +156,17 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $id = $user->id;
+        $user = User::find($id);
+        //If user was deleted before
+        if($id === null) {
+            return redirect('/')->with('success', 'User was deleted');
+        }
+        //Detach relations
+        $user->departments()->detach();
+        $user->roles()->detach();
+        //Delete
+        $user->delete();
+        return redirect('/')->with('success', 'User deleted');
     }
 }

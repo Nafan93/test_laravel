@@ -29,12 +29,22 @@
         <tbody >
             @forelse ($users as $user)
                 <tr>
-                    <td>
-                        update
-                        @role('admin')
-                            delete
-                        @endrole
-                    </td>
+                    @role('admin', 'manager')
+                        <td class="uk-flex">
+                            <a href="{{ route('users.edit', $user->id) }}" >
+                                <span uk-icon="pencil"></span>
+                            </a>
+                            @role('admin')
+                                <span>|</span>
+                                <form action="{{ route('users.destroy', $user->id)}}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="uk-button uk-button-link uk-text-danger" uk-icon="close" type="submit" title="Remove">
+                                    </button>
+                                </form>
+                            @endrole
+                        </td>
+                    @endrole
                     <td class="uk-width-small">
                         @if(isset($user->image))
                             <img src="{{ $user->image }}" alt="">
@@ -48,9 +58,6 @@
                         @forelse ($user->departments as $department)
                             <span>
                                 {{ $department->title }}
-                                @if ( !end($user->departments) )
-                                ,
-                                @endif
                             </span>
                         @empty
                             <span>Empty</span>
