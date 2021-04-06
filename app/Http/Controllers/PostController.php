@@ -55,15 +55,6 @@ class PostController extends Controller
             $post->image = '/storage/' . $imagePath;
         }
 
-
-        /*if ($request->has('image')) {
-            Storage::makeDirectory('uploads/posts/' . $post->id);
-        
-            $request->file('image')
-                ->move(storage_path() . '/app/public/uploads/posts/' . $post->id, $post->id . '.jpg');
- 
-            $post->image = '/storage/uploads/posts/' . $post->id . '/' . $post->id . '.jpg';
-        }*/
         $post->save();
         return redirect('/')->with('success', 'Post created');
     }

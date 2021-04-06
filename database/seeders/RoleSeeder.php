@@ -4,6 +4,7 @@ namespace Database\Seeders;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
 use App\Models\Role;
+use App\Models\Permission;
 class RoleSeeder extends Seeder
 {
     /**
@@ -13,18 +14,32 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('roles')->insert([
-            'slug' => 'admin',
-            'name' => 'Admin',
-        ]);
-        DB::table('roles')->insert([
-            'slug' => 'manager',
-            'name' => 'Manager',
-        ]);
-        DB::table('roles')->insert([
-            'slug' => 'user',
-            'name' => 'User',
-            
-        ]);
+        $addData = Permission::where('slug','add-data')->first();
+        $updateData = Permission::where('slug','update-data')->first();
+        $readData = Permission::where('slug','read-data')->first();
+        $deleteData = Permission::where('slug','delete-data')->first();
+
+        $admin = new Role();
+        $admin->name = 'Admin';
+        $admin->slug = 'admin';
+        $admin->save();
+        $admin->permissions()->attach($addData);
+        $admin->permissions()->attach($updateData);
+        $admin->permissions()->attach($readData);
+        $admin->permissions()->attach($deleteData);
+
+        $manager = new Role();
+        $manager->name = 'Manager';
+        $manager->slug = 'manager';
+        $manager->save();
+        $manager->permissions()->attach($addData);
+        $manager->permissions()->attach($updateData);
+        $manager->permissions()->attach($readData);
+
+        $user = new Role();
+        $user->name = 'User';
+        $user->slug = 'user';
+        $user->save();
+        $user->permissions()->attach($readData);
     }
 }

@@ -30,6 +30,7 @@ class UserSeeder extends Seeder
         $user1->name = 'Admin';
         $user1->email = 'admin@mail.com';
         $user1->password = Hash::make('12345678');
+        $user1->position_id = rand(1,10);
         $user1->save();
         $user1->roles()->attach($admin);
         $user1->permissions()->attach($addData);
@@ -41,6 +42,7 @@ class UserSeeder extends Seeder
         $user2->name = 'Manager';
         $user2->email = 'manager@mail.com';
         $user2->password = Hash::make('12345678');
+        $user2->position_id = rand(1,10);
         $user2->save();
         $user2->roles()->attach($manager);
         $user2->permissions()->attach($addData);
@@ -51,6 +53,7 @@ class UserSeeder extends Seeder
         $user3->name = 'User';
         $user3->email = 'user@mail.com';
         $user3->password = Hash::make('12345678');
+        $user3->position_id = rand(1,10);
         $user3->save();
         $user3->roles()->attach($user);
         $user3->permissions()->attach($readData);

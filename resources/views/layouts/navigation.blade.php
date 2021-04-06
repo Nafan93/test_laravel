@@ -3,9 +3,9 @@
     <div class="uk-navbar-left">
         <a class="uk-navbar-item uk-logo" href="{{ url('/') }}">Test Laravel</a>
         <ul class="uk-navbar-nav">
-            <li>
-                <a href="{{ route('posts.create') }}"> Create </a>
-            </li>
+            @role('admin', 'manager')
+                <li><a href="{{ route('users.create') }}">Create user</a></li>
+            @endrole 
         </ul>
     </div>
     <div class="uk-navbar-right">
