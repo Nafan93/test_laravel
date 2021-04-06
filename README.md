@@ -27,9 +27,9 @@ User            user@mail.com       12345678
 ******
 1. git clone git@github.com:Nafan93/test_laravel.git //clone repository
 2. cp .env.example .env nano .env //edit .env file  
-3. docker-compose build && docker-compose up -d cd //build and  
-4. sudo chmod -R 775 test_laravel && sudo chown -R $USER:$USER test_laravel/ 
+3. docker-compose build && docker-compose up -d cd //build and up docker containers (NGINX, MYSQL, PHPMyAdmin, APP(PHP service)) 
+4. sudo chmod -R 775 test_laravel/storage && sudo chown -R $USER:$USER test_laravel/storage //Set permissions for write to /storage folder
 5. cd test_laravel/ 
-6. composer install 
-7. docker compose exec app php artisan key:generay
-8. docker-compose exec app php artisan migrate:fresh --seed
+6. composer install //Instal Composer dependencies
+7. docker compose exec app php artisan key:generate // Generate APP_KEY
+8. docker-compose exec app php artisan migrate:fresh --seed //Make migrate and seede database
