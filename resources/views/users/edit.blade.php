@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', ' - Post Create')
+@section('title', ' - User Update')
     
 
 @section('content')  
@@ -137,7 +137,7 @@
                         </div>
                     </div>
                     <div class="uk-margin">
-                        <button type="submit" class="uk-button uk-button-primary"> Create</button>
+                        <button type="submit" class="uk-button uk-button-primary"> Update</button>
                     </div>
                 </div>
             </div>

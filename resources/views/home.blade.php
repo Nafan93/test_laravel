@@ -45,6 +45,7 @@
                             @endrole
                         </td>
                     @endrole
+                    
                     <td class="uk-width-small">
                         @if(isset($user->image))
                             <img src="{{ $user->image }}" alt="">

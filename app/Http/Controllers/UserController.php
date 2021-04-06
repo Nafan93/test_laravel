@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
 use App\Models\Department;
 use App\Models\Position;
 use App\Models\Role;
@@ -59,7 +59,7 @@ class UserController extends Controller
         $user = new User;
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = $request->password;
+        $user->password = Hash::make($request->password);
         $user->position_id = $request->position_id;
         $user->save();
 
@@ -127,6 +127,7 @@ class UserController extends Controller
         if ($request->password == '') {
             $user->password = $user->password;
         }
+        $user->password = Hash::make($request->password);
         $user->position_id = $request->position_id;
         $user->save();
         //Update relations

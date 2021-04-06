@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Department;
 class UserSeeder extends Seeder
 {
     /**
@@ -26,6 +27,7 @@ class UserSeeder extends Seeder
         $readData = Permission::where('slug','read-data')->first();
         $deleteData = Permission::where('slug','delete-data')->first();
 
+
         $user1 = new User();
         $user1->name = 'Admin';
         $user1->email = 'admin@mail.com';
@@ -37,6 +39,7 @@ class UserSeeder extends Seeder
         $user1->permissions()->attach($updateData);
         $user1->permissions()->attach($readData);
         $user1->permissions()->attach($deleteData);
+        $user1->departments()->attach(Department::inRandomOrder()->first());
 
         $user2 = new User();
         $user2->name = 'Manager';
@@ -48,6 +51,7 @@ class UserSeeder extends Seeder
         $user2->permissions()->attach($addData);
         $user2->permissions()->attach($updateData);
         $user2->permissions()->attach($readData);
+        $user2->departments()->attach(Department::inRandomOrder()->first());
         
         $user3 = new User();
         $user3->name = 'User';
@@ -57,5 +61,6 @@ class UserSeeder extends Seeder
         $user3->save();
         $user3->roles()->attach($user);
         $user3->permissions()->attach($readData);
+        $user3->departments()->attach(Department::inRandomOrder()->first());
     }
 }
